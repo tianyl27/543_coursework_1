@@ -13,10 +13,10 @@ The World Happiness Report is a landmark survey of the state of global happiness
 
 
 ```{r getData}
-link = 'https://github.com/tianyl27/543_coursework_1/blob/0a7bab870e7e62da8aee299ce47485f7826e86b7/WHR2021.csv'
-# load(file=url(link))
+link = 'https://raw.githubusercontent.com/tianyl27/543_coursework_1/main/WHR2021.csv'
+
 # getting the data TABLE from the file:
-WHRData2021 <- read.csv("~/Desktop/543/WHR2021.csv")
+WHRData2021 <- read.csv(file=url(link))
 ```
 
 #### Information of Variables
