@@ -39,6 +39,7 @@ length(unique(WHRData2021$Country.name))
 ```
 There are 148 countries in this dataset.
 ```{r}
+# aggregate countries by region
 Countries=aggregate(data=WHRData2021,
                          Country.name~Regional.indicator,
                          FUN=length)
@@ -67,11 +68,14 @@ The top 5 countires are China, India, United States, Indonesia and Pakistan.
 
 ##### 1.3 Calculate the cumulated number and percentages.
 ```{r}
+# convert total population number into millions
 pop2020$Population.2020 = pop2020$Population.2020/1000000
 pop2020$Population.2019 = pop2020$Population.2019/1000000
+# calculate the percentage, cumulative percentage and the cumulative population for each country
 pop2020$Percent2020=pop2020$Population.2020/sum(pop2020$Population.2020)
 pop2020$PercentCum=cumsum(pop2020$Percent)
 pop2020$Pop2020Cum=cumsum(as.numeric(pop2020$Population.2020))
+# calculate the changing rate in 2020
 pop2020$Pop.change = pop2020$Population.2020 - pop2020$Population.2019
 pop2020$Pop.change.rate = pop2020$Pop.change/pop2020$Population.2019
 # see some:
@@ -92,6 +96,7 @@ countries_80= pop2020[pop2020$PercentCum<0.8,]
 ```{r}
 library(ggplot2)
 
+# draw a picture of countries with top 30 population
 base1=ggplot(data=countries_80,
              aes(x=Country.name, Population.2020, fill=Pop.change.rate)) + theme_classic() + scale_x_discrete(limits=countries_80$Country.name) + theme(axis.text.y = element_text(face=ifelse(countries_80$Country.name%in%countries50,"bold","plain"))) + xlab("Country") + ylab("Population[millions]") 
 
@@ -101,17 +106,29 @@ bar1=base1 + geom_bar(stat = "identity",color='grey90',
                       show.legend = F) +  coord_flip()
 bar1
 
+# title text
+title1="Population for each country in 2020"
+subtitle1="The top 30 countries which represent 80% of the whole population"
 # Add the title and subtitle
-bar2 = bar1 + scale_fill_manual(values=c(NA,"grey90")) + labs(title="Population for each country in 2020", subtitle="The top 30 countries which represent 80% of the whole population")+ theme(plot.title = element_text(hjust = 0.3), plot.subtitle = element_text(hjust = 0.15))
+bar2 = bar1 + scale_fill_manual(values=c(NA,"grey90")) + labs(title=title1, 
+                                                              subtitle=subtitle1)+ theme(plot.title = element_text(hjust = 0.3),
+                                                                                         plot.subtitle = element_text(hjust = 0.15))
+
 bar2
 ```
 
 
 ```{r}
 library(ggQC)
+# draw a pareto picture
 base2=ggplot(data=countries_80,
              aes(x=Country.name,y=Population.2020)) + theme_classic()+ scale_x_discrete(limits=countries_80$Country.name)
-pare1=base2 + stat_pareto() + theme(axis.text.x = element_text(angle = 30, hjust = 1,face=ifelse(countries_80$Country.name%in%countries50,"bold","plain")))
+
+# This is just a practice of this function.
+# The picture doesn't have much meaning because the pareto distribution is based on the top 30 countries, not the whole world.
+pare1=base2 + stat_pareto() + theme(axis.text.x = element_text(angle = 30, 
+                                                               hjust = 1, face=ifelse(countries_80$Country.name%in%countries50,"bold","plain")))
+
 pare1
 ```
 
@@ -142,18 +159,19 @@ Western Europe has the highest average life expectancy.
 
 ##### 2.2 Plot the pictur
 ```{r}
+# title and caption text
 TitleText = "Average Healthy Life Expectancy for Each Region"
 CaptionText = "Source: https://worldhappiness.report/ed/2021/"
 
+# draw a picture of average life expectency for each region
 base3 = ggplot(data=LifeExp_countries, aes(x=Region, y=LifeExp, fill=LifeExp))+ theme_classic()+scale_fill_gradient(low = "cornsilk", high = "coral") + xlab("Region") + ylab("Healthy Life Expectancy") + scale_x_discrete(limits=LifeExp_countries$Region)
 
 # add errobar which shows the within-group variability
 bar3 = base3 + geom_bar(stat="identity", position = "dodge")+ geom_errorbar(aes(ymax = LifeExp+LifeExpStd, ymin = LifeExp-LifeExpStd), position = position_dodge(0.8),width=0.2) 
 
-  
+# add title and caption 
 bar4 = bar3 + coord_flip() + labs(title=TitleText, caption=CaptionText) + theme(plot.title = element_text(hjust = 1.2), plot.caption = element_text(hjust = -2.5)) 
 
-#+ theme(axis.text.x = element_text(angle = 30, hjust = 1))
 bar4
 
 ```
