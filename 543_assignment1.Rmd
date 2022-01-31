@@ -152,6 +152,9 @@ LifeExp_sd=aggregate(data=WHRData2021,
 LifeExp_countries = merge(LifeExp_countries,LifeExp_sd, by='Regional.indicator')
 # rename the columns
 colnames(LifeExp_countries) = c('Region', 'LifeExp','LifeExpStd')
+
+
+
 # order by the average life expectancy
 LifeExp_countries=LifeExp_countries[order(-LifeExp_countries$LifeExp),]
 ```
@@ -164,19 +167,42 @@ TitleText = "Average Healthy Life Expectancy for Each Region"
 CaptionText = "Source: https://worldhappiness.report/ed/2021/"
 
 # draw a picture of average life expectency for each region
-base3 = ggplot(data=LifeExp_countries, aes(x=Region, y=LifeExp, fill=LifeExp))+ theme_classic()+scale_fill_gradient(low = "cornsilk", high = "coral") + xlab("Region") + ylab("Healthy Life Expectancy") + scale_x_discrete(limits=LifeExp_countries$Region)
+base3 = ggplot(data=LifeExp_countries, aes(x=Region, y=LifeExp))+ theme_classic() + xlab("Region") + ylab("Healthy Life Expectancy") + scale_x_discrete(limits=LifeExp_countries$Region)
+# base3 = ggplot(data=LifeExp_countries, aes(x=Region, y=LifeExp, fill=LifeExp))+ theme_classic()+scale_fill_gradient(low = "cornsilk", high = "coral") + xlab("Region") + ylab("Healthy Life Expectancy") + scale_x_discrete(limits=LifeExp_countries$Region)
 
-# add errobar which shows the within-group variability
-bar3 = base3 + geom_bar(stat="identity", position = "dodge")+ geom_errorbar(aes(ymax = LifeExp+LifeExpStd, ymin = LifeExp-LifeExpStd), position = position_dodge(0.8),width=0.2) 
+# Get the average life expectancy for the whole world
+avg_LifeExp = mean(WHRData2021$Healthy.life.expectancy)
+low_regions=LifeExp_countries[LifeExp_countries$LifeExp<avg_LifeExp,"Region"]
+low_regions
+
+annotation1=paste0('World Average:',round(avg_LifeExp,2))
+LifeExpMin = min(LifeExp_countries$LifeExp)
+LifeExpMax = max(LifeExp_countries$LifeExp)
+annotation2=paste0('Min:',round(LifeExpMin,2))
+annotation3=paste0('Max:',round(LifeExpMax,2))
+
+
+bar3 = base3 + geom_bar(stat="identity", position = "dodge", aes(fill=LifeExp<avg_LifeExp), show.legend = F)+scale_fill_manual(values=c("grey","coral")) + ylim(0,80)
 
 # add title and caption 
-bar4 = bar3 + coord_flip() + labs(title=TitleText, caption=CaptionText) + theme(plot.title = element_text(hjust = 1.2), plot.caption = element_text(hjust = -2.5)) 
+bar4 = bar3 + coord_flip() + labs(title=TitleText, caption=CaptionText) + theme(plot.title = element_text(hjust = -1.5), plot.caption = element_text(hjust = -1))+ theme(axis.text.y = element_text(face=ifelse(LifeExp_countries$Region%in%low_regions,"bold","plain")))
 
-bar4
+# add errobar which shows the within-group variability
+bar5 = bar4 + geom_errorbar(aes(ymax = LifeExp+LifeExpStd, ymin = LifeExp-LifeExpStd), position = position_dodge(0.8),width=0.1,alpha=0.5) 
 
+bar5
+
+
+
+# add annotations
+bar6 = bar4 + geom_hline(yintercept = round(avg_LifeExp,2), linetype=3, size=1, alpha=0.8)+ annotate(geom = 'text',label=annotation1,y = avg_LifeExp,x=5.5,angle=0) + annotate(geom = 'text',label=annotation2,y = LifeExpMin,x=10,angle=0) + annotate(geom = 'text',label=annotation3,y = LifeExpMax,x=1,angle=0) 
+
+bar6
+#ANZ: Australia and New Zealand
 ```
 Several findings:  
 a) Western Europe has both the highest average life expectancy and the least in-group variance.  
 b) Sub-Saharan Africa has the lowest average life expectancy.  
 c) Regions in Asia tend to have higher variance.  
+d) Four resgions have lower life expectency than the average value for the whole world
 
