@@ -160,13 +160,13 @@ LifeExp_countries=LifeExp_countries[order(-LifeExp_countries$LifeExp),]
 ```
 Western Europe has the highest average life expectancy.
 
-##### 2.2 Plot the pictur
+##### 2.2 Plot the picture
 ```{r}
 # title and caption text
 TitleText = "Average Healthy Life Expectancy for Each Region"
 CaptionText = "Source: https://worldhappiness.report/ed/2021/"
 
-# draw a picture of average life expectency for each region
+# draw a picture of average life expectancy for each region
 base3 = ggplot(data=LifeExp_countries, aes(x=Region, y=LifeExp))+ theme_classic() + xlab("Region") + ylab("Healthy Life Expectancy") + scale_x_discrete(limits=LifeExp_countries$Region)
 # base3 = ggplot(data=LifeExp_countries, aes(x=Region, y=LifeExp, fill=LifeExp))+ theme_classic()+scale_fill_gradient(low = "cornsilk", high = "coral") + xlab("Region") + ylab("Healthy Life Expectancy") + scale_x_discrete(limits=LifeExp_countries$Region)
 
@@ -185,9 +185,9 @@ annotation3=paste0('Max:',round(LifeExpMax,2))
 bar3 = base3 + geom_bar(stat="identity", position = "dodge", aes(fill=LifeExp<avg_LifeExp), show.legend = F)+scale_fill_manual(values=c("grey","coral")) + ylim(0,80)
 
 # add title and caption 
-bar4 = bar3 + coord_flip() + labs(title=TitleText, caption=CaptionText) + theme(plot.title = element_text(hjust = -1.5), plot.caption = element_text(hjust = -1))+ theme(axis.text.y = element_text(face=ifelse(LifeExp_countries$Region%in%low_regions,"bold","plain")))
+bar4 = bar3 + coord_flip() + labs(title=TitleText, caption=CaptionText) + theme(plot.title = element_text(hjust = 2), plot.caption = element_text(hjust = -1))+ theme(axis.text.y = element_text(face=ifelse(LifeExp_countries$Region%in%low_regions,"bold","plain")))
 
-# add errobar which shows the within-group variability
+# add errorbar which shows the within-group variability
 bar5 = bar4 + geom_errorbar(aes(ymax = LifeExp+LifeExpStd, ymin = LifeExp-LifeExpStd), position = position_dodge(0.8),width=0.1,alpha=0.5) 
 
 bar5
@@ -205,4 +205,4 @@ a) Western Europe has both the highest average life expectancy and the least in-
 b) Sub-Saharan Africa has the lowest average life expectancy.  
 c) Regions in Asia tend to have higher variance.  
 d) Four resgions have lower life expectency than the average value for the whole world
-
+The healthy life expectency is an important indicator which influences the citizens' feeling of happiness greatly. From the perspective of global health, more resources should be put into increase the health system in regions and countries with a comparatively low life expectency.
