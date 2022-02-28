@@ -164,7 +164,7 @@ Western Europe has the highest average life expectancy.
 ##### 2.2 Plot the picture
 ```{r}
 # title and caption text
-TitleText = "Average Healthy Life Expectancy for Each Region"
+TitleText = "Average Healthy Life Expectancy"
 CaptionText = "Source: https://worldhappiness.report/ed/2021/"
 
 # draw a picture of average life expectancy for each region
@@ -189,14 +189,14 @@ bar3 = base3 + geom_bar(stat="identity", position = "dodge", aes(fill=LifeExp<av
 bar4 = bar3 + coord_flip() + labs(title=TitleText, caption=CaptionText) + theme(plot.title = element_text(hjust = 0), plot.caption = element_text(hjust = -1))+ theme(axis.text.y = element_text(face=ifelse(LifeExp_countries$Region%in%low_regions,"bold","plain")))
 
 # add errorbar which shows the within-group variability
-bar5 = bar4 + geom_errorbar(aes(ymax = LifeExp+LifeExpStd, ymin = LifeExp-LifeExpStd), position = position_dodge(0.8),width=0.1,alpha=0.5) 
+#bar5 = bar4 + geom_errorbar(aes(ymax = LifeExp+LifeExpStd, ymin = LifeExp-LifeExpStd), position = position_dodge(0.8),width=0.1,alpha=0.5) 
 
-bar5
+#bar5
 
 
 
 # add annotations
-bar6 = bar4 + geom_hline(yintercept = round(avg_LifeExp,2), linetype=3, size=1, alpha=0.8)+ annotate(geom = 'text',label=annotation1,y = avg_LifeExp,x=5.5,angle=0) + annotate(geom = 'text',label=annotation2,y = LifeExpMin,x=10,angle=0) + annotate(geom = 'text',label=annotation3,y = LifeExpMax,x=1,angle=0) 
+bar6 = bar4 + geom_hline(yintercept = round(avg_LifeExp,2), linetype=3, size=1, alpha=0.8)+ annotate(geom = 'text',label=annotation1,y = avg_LifeExp,x=5.5,angle=0) + annotate(geom = 'text',label=annotation2,y = LifeExpMin,x=10,angle=0) + annotate(geom = 'text',label=annotation3,y = LifeExpMax,x=1,angle=0)+theme(legend.position='none')
 
 bar6
 #ANZ: Australia and New Zealand
