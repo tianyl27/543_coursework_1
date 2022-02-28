@@ -52,10 +52,11 @@ We now can see the number of countries for each region.
 ##### 1.1 Get the population number (country level)  
 ```{r}
 # get population data
-pop2020 = cbind(WHRData2021[,1:2],WHRData2021[,21:22])
+pop2020 = cbind(WHRData2021[,1:2],WHRData2021[,20:22])
 
 # delete rows with na values: None
 pop2020 = pop2020[complete.cases(pop2020),]
+head(pop2020)
 ```
 
 ##### 1.2 Order by 2020 population to get information of countries with most populations.  
